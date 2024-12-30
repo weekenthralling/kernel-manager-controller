@@ -1,0 +1,9 @@
+apiVersion: jupyrator.org/v1
+kind: KernelManager
+metadata:
+  labels:
+    app.kubernetes.io/name: kernel-manager-controller
+    app.kubernetes.io/managed-by: kustomize
+  name: kernelmanager-sample
+spec:
+  # TODO(user): Add fields here

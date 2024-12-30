@@ -1,0 +1,13 @@
+# Add additional columns to the kernelmanager CRD
+- op: add
+  path: /spec/versions/0/additionalPrinterColumns
+  value:
+    - jsonPath: .status.phase
+      name: STATUS
+      type: string
+    - jsonPath: .status.ip
+      name: ADDRESS
+      type: string
+    - name: AGE
+      type: date
+      jsonPath: .status.containerState.running.startedAt
