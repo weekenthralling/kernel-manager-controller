@@ -42,10 +42,10 @@ jobs:
       uses: docker/setup-buildx-action@v3
     - name: Build and push multi-arch docker image on release
       run: |
-        export IMG=${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ steps.meta.outputs.tags }}
+        export IMG=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}
         make docker-buildx
     - name: Build and push latest multi-arch docker image
       id: latest
       run: |
-        export IMG=${{ env.REGISTRY }}/${{ env.IMAGE }}:latest
+        export IMG=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
         make docker-buildx
