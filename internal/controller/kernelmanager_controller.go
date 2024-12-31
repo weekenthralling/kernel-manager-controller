@@ -318,7 +318,7 @@ func generatePod(instance *v1.KernelManager, sidecarImage string) *corev1.Pod {
 		}
 
 		sidecarContainer := corev1.Container{
-			Name:  "sidecar",
+			Name:  "monitor",
 			Image: sidecarImage,
 			Env:   sidecarContainerEnvs,
 			VolumeMounts: []corev1.VolumeMount{
