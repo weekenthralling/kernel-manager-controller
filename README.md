@@ -1,27 +1,25 @@
 # kernel-manager-controller
-// TODO(user): Add simple overview of use/purpose
 
 ## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+The `kernel-manager-controller` is a Kubernetes controller designed to manage kernel-related resources within a Kubernetes cluster. It provides functionalities to deploy, manage, and monitor kernel resources efficiently.
 
 ## Getting Started
 
 ### Prerequisites
-- go version v1.22.0+
-- docker version 17.03+.
-- kubectl version v1.11.3+.
-- Access to a Kubernetes v1.11.3+ cluster.
+- Go version v1.23.0+
+- Docker version 17.03+
+- Kubectl version v1.11.3+
+- Access to a Kubernetes v1.11.3+ cluster
 
-### To Deploy on the cluster
+### To Deploy on the Cluster
+
 **Build and push your image to the location specified by `IMG`:**
 
 ```sh
 make docker-build docker-push IMG=<some-registry>/kernel-manager-controller:tag
 ```
 
-**NOTE:** This image ought to be published in the personal registry you specified.
-And it is required to have access to pull the image from the working environment.
-Make sure you have the proper permission to the registry if the above commands don’t work.
+**NOTE:** This image should be published in the personal registry you specified. Ensure you have access to pull the image from the working environment. Make sure you have the proper permission to the registry if the above commands don’t work.
 
 **Install the CRDs into the cluster:**
 
@@ -35,36 +33,57 @@ make install
 make deploy IMG=<some-registry>/kernel-manager-controller:tag
 ```
 
-> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
-privileges or be logged in as admin.
+> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin privileges or be logged in as admin.
 
-**Create instances of your solution**
+**Create instances of your solution:**
+
 You can apply the samples (examples) from the config/sample:
 
 ```sh
 kubectl apply -k config/samples/
 ```
 
->**NOTE**: Ensure that the samples has default values to test it out.
+> **NOTE**: Ensure that the samples have default values to test it out.
 
 ### To Uninstall
+
 **Delete the instances (CRs) from the cluster:**
 
 ```sh
 kubectl delete -k config/samples/
 ```
 
-**Delete the APIs(CRDs) from the cluster:**
+**Delete the APIs (CRDs) from the cluster:**
 
 ```sh
 make uninstall
 ```
 
-**UnDeploy the controller from the cluster:**
+**Undeploy the controller from the cluster:**
 
 ```sh
 make undeploy
 ```
+
+## Commandline parameters
+
+`metrics-bind-address`: The address the metric endpoint binds to. The default value is `:8080`.
+
+`health-probe-bind-address`: The address the health endpoint binds to. The default value is `:8081`.
+
+`leader-elect`: Enable leader election for controller manager. Enabling this will ensure there is only one
+active controller manager. The default value is `false`.
+
+`metrics-secure`: The metrics endpoint is served securely via HTTPS. Use --metrics-secure=false to use HTTP instead.
+
+`enable-http2`: HTTP/2 will be enabled for the metrics and webhook servers.
+
+`monitor-image`: Monitoring image using to monitor the kernel activity.
+
+**NOTE:** When creating a KernelManager, if you set `monitor-image`, and specify both `idleTimeoutSeconds` and `kernelConnectionConfig`, the Manager Controller will add a sidecar container to the KernelManager to monitor the activity of the kernel. Once the kernel exceeds the specified `idleTimeoutSeconds`, the sidecar container will add the label `jupyrator.org/kernelmanager-idle=true`. This label will later be removed by the Manager Controller.
+
+**The monitor feature adds labels and annotations to the KernelManager. Therefore, the serviceAccountName field must be specified when creating the Custom Resource (CR). If not specified, `jupyrator-edit` will be used as the default service account. Please ensure that the `jupyrator-edit` service account is created within the appropriate namespace.**
+
 
 ## Project Distribution
 
@@ -76,29 +95,21 @@ Following are the steps to build the installer and distribute this project to us
 make build-installer IMG=<some-registry>/kernel-manager-controller:tag
 ```
 
-NOTE: The makefile target mentioned above generates an 'install.yaml'
-file in the dist directory. This file contains all the resources built
-with Kustomize, which are necessary to install this project without
-its dependencies.
+NOTE: The makefile target mentioned above generates an `install.yaml` file in the `dist` directory. This file contains all the resources built with Kustomize, which are necessary to install this project without its dependencies.
 
-2. Using the installer
+2. Using the installer:
 
-Users can just run kubectl apply -f <URL for YAML BUNDLE> to install the project, i.e.:
+Users can just run `kubectl apply -f <URL for YAML BUNDLE>` to install the project, i.e.:
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/<org>/kernel-manager-controller/<tag or branch>/dist/install.yaml
 ```
 
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
+**NOTE:** Run `make help` for more information on all potential `make` targets.
 
-**NOTE:** Run `make help` for more information on all potential `make` targets
-
-More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
+More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html).
 
 ## License
-
-Copyright 2024.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -109,6 +120,4 @@ You may obtain a copy of the License at
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
+See the License for the specific language governing permissions and limitations under the License.
