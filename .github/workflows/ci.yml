@@ -1,4 +1,4 @@
-name: Lint
+name: Lint && Test
 
 on:
   push:
@@ -19,8 +19,8 @@ on:
 
 
 jobs:
-  lint:
-    name: Run on Ubuntu
+  lint-test:
+    name: Lint & Test
     runs-on: ubuntu-latest
     steps:
       - name: Clone the code
@@ -35,3 +35,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.61
+      - name: Running Tests
+        run: |
+          go mod tidy
+          make test
