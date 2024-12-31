@@ -41,6 +41,8 @@ import (
 const KernelManagerNameLabel = "jupyrator.org/kernelmanager-name"
 const KernelManagerIdleLabel = "jupyrator.org/kernelmanager-idle"
 
+const DefaultServiceAccount = "jupyrator-editor"
+
 func ignoreNotFound(err error) error {
 	if apierrs.IsNotFound(err) {
 		return nil
@@ -260,9 +262,10 @@ func generatePod(instance *v1.KernelManager, sidecarImage string) *corev1.Pod {
 		}
 
 		// Set container env to use the connection file
+		sidecarConnectionFilePath := fmt.Sprintf("%s/%s.json", mountPath, instance.Name)
 		pod.Spec.Containers[0].Env = append(pod.Spec.Containers[0].Env, corev1.EnvVar{
 			Name:  "KERNEL_CONNECTION_FILE_PATH",
-			Value: fmt.Sprintf("%s/%s.json", mountPath, instance.Name),
+			Value: sidecarConnectionFilePath,
 		})
 
 		// Set pod volume and volume mount
@@ -326,6 +329,14 @@ func generatePod(instance *v1.KernelManager, sidecarImage string) *corev1.Pod {
 			},
 		}
 		pod.Spec.Containers = append(pod.Spec.Containers, sidecarContainer)
+
+		// Add the default service account to the pod, if not provided
+		// NODE: The sidecar container uses the default service account to access the Kubernetes API
+		// to label the kernel manager when it's idle.
+		// And set the last activity time to the current time.
+		if pod.Spec.ServiceAccountName == "" {
+			pod.Spec.ServiceAccountName = DefaultServiceAccount
+		}
 	}
 	return pod
 }
