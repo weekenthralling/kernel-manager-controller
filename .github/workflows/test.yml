@@ -2,7 +2,20 @@ name: Tests
 
 on:
   push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'config/**'
   pull_request:
+    branches:
+        - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'config/**'
+  workflow_dispatch:  # Allows to trigger the workflow manually in GitHub UI
 
 jobs:
   test:
