@@ -57,7 +57,7 @@ type KernelManagerReconciler struct {
 	Log           logr.Logger
 	Metrics       *metrics.Metrics
 	EventRecorder record.EventRecorder
-	SidecarImage  string
+	MonitorImage  string
 }
 
 // +kubebuilder:rbac:groups=core,resources=events,verbs=get;list;watch;create;patch
@@ -154,7 +154,7 @@ func (r *KernelManagerReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	// Generate Pod resource for KernelManager
-	pod := generatePod(instance, r.SidecarImage)
+	pod := generatePod(instance, r.MonitorImage)
 	if err := ctrl.SetControllerReference(instance, pod, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -239,7 +239,7 @@ func generateConfigMap(instance *v1.KernelManager) (*corev1.ConfigMap, error) {
 }
 
 // generatePod generates a pod resource for the given KernelManager instance.
-func generatePod(instance *v1.KernelManager, sidecarImage string) *corev1.Pod {
+func generatePod(instance *v1.KernelManager, monitorImage string) *corev1.Pod {
 	pod := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        instance.Name,
@@ -291,7 +291,7 @@ func generatePod(instance *v1.KernelManager, sidecarImage string) *corev1.Pod {
 	// If `IdleTimeoutSeconds` and `ConnectionConfig` is provided
 	// Add a sidecar container to monitor the kernel manager's activity
 	// NODE: The sidecar container uses the connection file to connect to the kernel and monitor the activity.
-	if sidecarImage != "" && instance.Spec.IdleTimeoutSeconds != 0 && instance.Spec.ConnectionConfig != (v1.KernelConnectionConfig{}) {
+	if monitorImage != "" && instance.Spec.IdleTimeoutSeconds != 0 && instance.Spec.ConnectionConfig != (v1.KernelConnectionConfig{}) {
 		// Set the culling interval to 60 seconds if not provided
 		cullingIntervalSeconds := instance.Spec.CullingIntervalSeconds
 		if cullingIntervalSeconds == 0 {
@@ -319,7 +319,7 @@ func generatePod(instance *v1.KernelManager, sidecarImage string) *corev1.Pod {
 
 		sidecarContainer := corev1.Container{
 			Name:  "monitor",
-			Image: sidecarImage,
+			Image: monitorImage,
 			Env:   sidecarContainerEnvs,
 			VolumeMounts: []corev1.VolumeMount{
 				{

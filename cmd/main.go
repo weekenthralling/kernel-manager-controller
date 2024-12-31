@@ -60,7 +60,7 @@ func main() {
 	var secureMetrics bool
 	var enableHTTP2 bool
 	var tlsOpts []func(*tls.Config)
-	var sidecarImage string
+	var monitorImage string
 	flag.StringVar(&metricsAddr, "metrics-bind-address", "0", "The address the metrics endpoint binds to. "+
 		"Use :8443 for HTTPS or :8080 for HTTP, or leave as 0 to disable the metrics service.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
@@ -71,7 +71,7 @@ func main() {
 		"If set, the metrics endpoint is served securely via HTTPS. Use --metrics-secure=false to use HTTP instead.")
 	flag.BoolVar(&enableHTTP2, "enable-http2", false,
 		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
-	flag.StringVar(&sidecarImage, "sidecar-image", "", "The image of the sidecar container to run in the kernel pods")
+	flag.StringVar(&monitorImage, "monitor-image", "", "The image of the monitor sidecar container to run in the kernel pods")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -151,7 +151,7 @@ func main() {
 		Log:           ctrl.Log.WithName("controllers").WithName("Kernel"),
 		Metrics:       metrics.NewMetrics(mgr.GetClient()),
 		EventRecorder: mgr.GetEventRecorderFor("kernel-controller"),
-		SidecarImage:  sidecarImage,
+		MonitorImage:  monitorImage,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "KernelManager")
 		os.Exit(1)
