@@ -100,7 +100,9 @@ func (r *KernelManagerReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	// If not found, continue. Is not an event.
 	instance := &v1.KernelManager{}
 	if err := r.Get(ctx, req.NamespacedName, instance); err != nil {
-		log.Error(err, "unable to fetch KernelManager")
+		if ignoreNotFound(err) != nil {
+			log.Error(err, "unable to fetch KernelManager")
+		}
 		return ctrl.Result{}, ignoreNotFound(err)
 	}
 
