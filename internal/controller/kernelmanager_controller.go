@@ -34,14 +34,14 @@ import (
 
 	"github.com/go-logr/logr"
 	v1 "github.com/kernel_manager_controller/api/v1"
-	"github.com/kernel_manager_controller/metrics"
-	"github.com/kernel_manager_controller/reconcilehelper"
+	"github.com/kernel_manager_controller/internal/metrics"
+	"github.com/kernel_manager_controller/internal/reconcilehelper"
 )
 
 const KernelManagerNameLabel = "jupyrator.org/kernelmanager-name"
 const KernelManagerIdleLabel = "jupyrator.org/kernelmanager-idle"
 
-const DefaultServiceAccount = "jupyrator-editor"
+const DefaultServiceAccount = "default-editor"
 
 func ignoreNotFound(err error) error {
 	if apierrs.IsNotFound(err) {
