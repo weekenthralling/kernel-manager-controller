@@ -167,6 +167,10 @@ func (r *KernelManagerReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		if err = r.Create(ctx, pod); err != nil {
 			log.Error(err, "unable to create pod")
 			r.Metrics.KernelManagerFailCreation.WithLabelValues(pod.Namespace).Inc()
+
+			r.EventRecorder.Eventf(instance, corev1.EventTypeWarning,
+				"FailedCreate", "Failed to perform operation on %s: %v", instance.Name, err)
+
 			return ctrl.Result{}, err
 		}
 	} else if err != nil {
