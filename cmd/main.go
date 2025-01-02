@@ -37,7 +37,7 @@ import (
 
 	jupyratororgv1 "github.com/kernel_manager_controller/api/v1"
 	"github.com/kernel_manager_controller/internal/controller"
-	"github.com/kernel_manager_controller/metrics"
+	"github.com/kernel_manager_controller/internal/metrics"
 	// +kubebuilder:scaffold:imports
 )
 
