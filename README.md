@@ -82,7 +82,7 @@ active controller manager. The default value is `false`.
 
 **NOTE:** When creating a KernelManager, if you set `monitor-image`, and specify both `idleTimeoutSeconds` and `kernelConnectionConfig`, the Manager Controller will add a sidecar container to the KernelManager to monitor the activity of the kernel. Once the kernel exceeds the specified `idleTimeoutSeconds`, the sidecar container will add the label `jupyrator.org/kernelmanager-idle=true`. This label will later be removed by the Manager Controller.
 
-**The monitor feature adds labels and annotations to the KernelManager. Therefore, the serviceAccountName field must be specified when creating the Custom Resource (CR). If not specified, `jupyrator-edit` will be used as the default service account. Please ensure that the `jupyrator-edit` service account is created within the appropriate namespace.**
+**The monitor feature adds labels and annotations to the KernelManager. Therefore, the serviceAccountName field must be specified when creating the Custom Resource (CR). If not specified, `default-editor` will be used as the default service account. Please ensure that the `default-editor` service account is created within the appropriate namespace.**
 
 
 ## Project Distribution
